@@ -1,0 +1,4 @@
+duckdb
+clickhouse-driver
+numpy
+pandas
