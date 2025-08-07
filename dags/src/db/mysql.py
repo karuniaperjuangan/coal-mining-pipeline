@@ -25,7 +25,7 @@ class MySQLConnection(Connection):
             self._connection.close()
             print("MySQL connection closed.")
 
-    def execute_query(self, query: str, params: tuple = None):
+    def execute_query(self, query: str, params: tuple = None, settings=None):
         if not self._connection or not self._connection.is_connected():
             raise Exception("MySQL connection is not established.")
         
@@ -40,3 +40,8 @@ class MySQLConnection(Connection):
                 return cursor.rowcount
         finally:
             cursor.close()
+
+    def get_conn(self):
+        if not self._connection:
+            self.connect()
+        return self._connection

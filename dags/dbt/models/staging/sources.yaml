@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: staging
+    schema: staging
+    tables:
+      - name: equipment_sensors
+      - name: mines
+      - name: production_logs
+      - name: weather

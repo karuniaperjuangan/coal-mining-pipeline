@@ -1,0 +1,14 @@
+coal_mining_dbt:
+  target: clickhouse
+  outputs:
+    clickhouse:
+      type: clickhouse  # Adapter type for ClickHouse
+      host: localhost  # e.g., localhost or a remote server
+      port: 8123  # Default HTTP port for ClickHouse
+      user: default  # Your ClickHouse username
+      password: ""    # Your ClickHouse password
+      schema: staging  # Use the database name for the schema
+      secure: false  # Set to true for HTTPS connections
+      threads: 1
+      cluster: "'{cluster}'"
+      send_receive_timeout: 3600

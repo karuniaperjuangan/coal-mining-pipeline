@@ -24,11 +24,23 @@ class ClickHouseConnection(Connection):
         self._connection = None
         print("ClickHouse connection reference cleared.")
 
-    def execute_query(self, query: str, params: tuple = None):
+    def execute_query(self, query: str, params: tuple = None, settings:dict=None):
         if not self._connection:
             raise Exception("ClickHouse connection is not established.")
         try:
-            return self._connection.execute(query, params or ())
+            return self._connection.execute(query, params or (),settings=settings)
+        except ClickHouseError as e:
+            print(f"ClickHouse query error: {e}")
+            return None
+
+    def get_conn(self):
+        if not self._connection:
+            self.connect()
+        return self._connection
+    
+    def insert_dataframe(self,query,dataframe):
+        try:
+            return self._connection.insert_dataframe(query,dataframe,settings={'use_numpy': True})
         except ClickHouseError as e:
             print(f"ClickHouse query error: {e}")
             return None

@@ -19,5 +19,9 @@ class Connection(abc.ABC):
           pass    
     
     @abc.abstractmethod
-    def execute_query(self, query: str, params: tuple = None):
+    def execute_query(self, query: str, params: tuple = None, settings:dict=None):
+          pass
+    
+    @abc.abstractmethod
+    def get_conn(self):
           pass
