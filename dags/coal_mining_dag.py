@@ -7,6 +7,7 @@ from airflow.operators.python import PythonOperator
 from airflow.operators.bash import BashOperator
 from airflow.operators.empty import EmptyOperator
 
+#import src
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
 
 from extractor.fetch_csv import fetch_csv
@@ -46,8 +47,15 @@ def coal_mining_dag():
         cwd=os.path.join(os.path.dirname(__file__), "dbt"),
     )
 
+    dbt_test_task = BashOperator(
+        task_id="dbt_test",
+        # check failed unit test cases.
+        bash_command=f"set -o pipefail; dbt test 2>&1 | tee {os.path.dirname(__file__)}/../logs/dbt_test_failures.log",
+        cwd=os.path.join(os.path.dirname(__file__), "dbt"),
+    )
+
     end_task = EmptyOperator(task_id="end")
 
-    start_task >> [fetch_csv_task, fetch_mysql_task, fetch_weather_task] >> dbt_run_task >> end_task
+    start_task >> [fetch_csv_task, fetch_mysql_task, fetch_weather_task] >> dbt_run_task >> dbt_test_task >> end_task
 
 coal_mining_dag_instance = coal_mining_dag()
