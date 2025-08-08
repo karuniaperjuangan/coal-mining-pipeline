@@ -18,7 +18,7 @@ WITH daily_status AS (
         avg(fuel_consumption) AS avg_fuel_consumption,
         max(ingested_at) as ingested_at,
         toUnixTimestamp(now()) as version
-    FROM {{ source('staging', 'equipment_sensors') }}
+    FROM {{ source('staging', 'equipment_sensors') }} FINAL
     GROUP BY
         date,
         equipment_id

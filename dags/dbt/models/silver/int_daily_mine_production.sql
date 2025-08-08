@@ -14,6 +14,6 @@ SELECT
     sum(quality_grade * greatest(0,tons_extracted)) / sum(greatest(0,tons_extracted)) AS avg_quality_grade,
     max(ingested_at) as ingested_at,
     max(toUnixTimestamp(now())) as version
-FROM {{ ref('production_logs') }}
+FROM {{ ref('production_logs') }} FINAL
 LEFT JOIN {{ ref('mines') }} using (mine_id)
 GROUP BY date, mine_id

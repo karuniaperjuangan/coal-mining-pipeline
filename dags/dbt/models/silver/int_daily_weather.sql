@@ -11,5 +11,5 @@ SELECT
     sum(precipitation_sum) AS precipitation_sum,
     max(ingested_at) as ingested_at,
     max(toUnixTimestamp(now())) as version    
-FROM {{ ref('weather') }}
+FROM {{ ref('weather') }} FINAL
 GROUP BY toDate(time)
