@@ -6,6 +6,13 @@ class ClickHouseConnection(Connection):
 
     def connect(self):
         try:
+            Client(
+                host=self.host,
+                port=self.port,
+                user=self.user,
+                password=self.password,
+            ).execute(f"CREATE DATABASE IF NOT EXISTS {self.dbname} ON CLUSTER '{{cluster}}';")
+
             self._connection = Client(
                 host=self.host,
                 port=self.port,

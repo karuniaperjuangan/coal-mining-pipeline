@@ -32,7 +32,10 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   coal_mining:
     # Config indicated by + and applies to all files under models/example/
-    intermediate:
-      +schema: intermediate
-    mart:
-      +schema: mart
+    bronze:
+      +schema: bronze
+      +materialized: view #only as view, not need to be created as a table
+    silver:
+      +schema: silver
+    gold:
+      +schema: gold

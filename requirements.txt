@@ -2,3 +2,7 @@ duckdb
 clickhouse-driver
 numpy
 pandas
+python-dotenv
+mysql-connector-python
+dbt-core
+dbt-clickhouse

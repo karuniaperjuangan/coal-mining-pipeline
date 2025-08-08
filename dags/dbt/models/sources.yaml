@@ -2,7 +2,7 @@ version: 2
 
 sources:
   - name: staging
-    schema: staging
+    database: staging
     tables:
       - name: equipment_sensors
       - name: mines

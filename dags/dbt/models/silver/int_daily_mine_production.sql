@@ -1,5 +1,6 @@
 {{ config(
-    materialized='table',
+    materialized='incremental',
+    unique_key=['date', 'mine_id'],
     engine="ReplicatedReplacingMergeTree('/clickhouse/tables/{uuid}/{shard}', '{replica}', version)",
     order_by="(date, mine_id)"
 ) }}
@@ -13,6 +14,6 @@ SELECT
     sum(quality_grade * greatest(0,tons_extracted)) / sum(greatest(0,tons_extracted)) AS avg_quality_grade,
     max(ingested_at) as ingested_at,
     max(toUnixTimestamp(now())) as version
-FROM {{ source('staging', 'production_logs') }}
-LEFT JOIN {{ source('staging', 'mines') }} using (mine_id)
+FROM {{ ref('production_logs') }}
+LEFT JOIN {{ ref('mines') }} using (mine_id)
 GROUP BY date, mine_id
