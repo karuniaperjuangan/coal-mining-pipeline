@@ -37,7 +37,7 @@ def coal_mining_dag():
     fetch_weather_task = PythonOperator(
         task_id="fetch_weather_api",
         python_callable=fetch_weather_api,
-        op_kwargs={'start_date': f'{os.environ.get("START_DATE", {{ ds}})}'}, 'end_date': f'{os.environ.get("END_DATE", {{ ds }})}''
+        op_kwargs={'start_date': os.environ.get("START_DATE", '{{ds}}'), 'end_date': os.environ.get("END_DATE", '{{ds}}')}
     )
 
     dbt_run_task = BashOperator(

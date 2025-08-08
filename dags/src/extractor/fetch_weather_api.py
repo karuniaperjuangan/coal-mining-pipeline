@@ -15,6 +15,10 @@ def fetch_weather_api(start_date,end_date):
     }
         
     response = requests.get(f"https://archive-api.open-meteo.com/v1/archive?latitude=2.0167&longitude=117.3&start_date={start_date}&end_date={end_date}&daily=temperature_2m_mean,precipitation_sum&timezone=Asia%2FJakarta")
+    
+    if response.status_code != 200:
+        raise Exception(f"Request failed with status code {response.status_code}")
+
     data = response.json()["daily"]
 
     df_result = pd.DataFrame.from_dict(data=data,orient="columns")
@@ -38,3 +42,6 @@ def fetch_weather_api(start_date,end_date):
                                     primary_keys=["time"]) # manually set for now
     ch_conn.insert_dataframe(f"""INSERT INTO {config_clickhouse["dbname"]}.{table} {str(tuple(df_result.columns)).replace("'","")} VALUES""", df_result)    
 
+if __name__ == "__main__":
+      fetch_weather_api("2024-30-06","2025-07-01")
+      

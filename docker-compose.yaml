@@ -81,6 +81,8 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
   user: "${AIRFLOW_UID:-50000}:0"
+  networks:
+    - default
   depends_on:
     &airflow-common-depends-on
     redis:
@@ -390,7 +392,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./extras/metabase-data:/metabase.db
+      - ./extras/metabase-data:/metabase/data
     env_file: .env
     depends_on:
       - mysql

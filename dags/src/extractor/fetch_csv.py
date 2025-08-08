@@ -15,7 +15,7 @@ def fetch_csv():
 
     csv_names =["equipment_sensors"]
     for table in csv_names:
-            df_result = pd.read_csv(os.path.join(os.path.dirname(__file__),"..","..",f"seed/iot/{table}.csv"))
+            df_result = pd.read_csv(os.path.join(os.path.dirname(__file__),"..","..","..",f"seed/iot/{table}.csv"))
             
             ch_conn = ClickHouseConnection(
                         host=config_clickhouse["host"],
