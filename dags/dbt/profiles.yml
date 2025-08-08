@@ -7,8 +7,7 @@ coal_mining_dbt:
       port: 8123  # Default HTTP port for ClickHouse
       user: default  # Your ClickHouse username
       password: ""    # Your ClickHouse password
-      schema: staging  # Use the database name for the schema
       secure: false  # Set to true for HTTPS connections
       threads: 1
-      cluster: "'{cluster}'"
+      cluster: "{cluster}"
       send_receive_timeout: 3600
