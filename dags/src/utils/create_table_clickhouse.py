@@ -184,7 +184,7 @@ def create_clickhouse_table_from_df(
 
     # Construct the full CREATE TABLE SQL statement
     create_table_sql = f"""
-    CREATE TABLE IF NOT EXISTS {table_name}
+    CREATE TABLE IF NOT EXISTS {database_name}.{table_name}
     {f"ON CLUSTER {cluster_name}" if cluster_name else ""}
     (
     {columns_sql}
