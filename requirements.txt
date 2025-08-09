@@ -6,3 +6,4 @@ python-dotenv
 mysql-connector-python
 dbt-core
 dbt-clickhouse
+prophet
