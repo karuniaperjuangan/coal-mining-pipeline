@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import pandas as pd
 from db.clickhouse import ClickHouseConnection
 from forecaster.forecaster import Forecaster
@@ -24,8 +25,10 @@ def forecast_production():
 
     try:
         data, columns = ch_conn.execute_query(
-            "SELECT date, total_production_daily, precipitation_sum FROM default_gold.daily_production_metrics"
+            "SELECT date, total_production_daily, precipitation_sum FROM default_gold.daily_production_metrics",
+            with_column_types=True
         )
+        columns = [col[0] for col in columns]
         df = pd.DataFrame(data, columns=columns)
         df = df.rename(columns={'date': 'ds', 'total_production_daily': 'y'}) # format to follow prophet
 
@@ -41,14 +44,14 @@ def forecast_production():
             if col == 'precipitation_sum' and 'precipitation_sum' in forecast.columns:
                  forecasted_df[col] = forecast[col]
             else:
-                forecasted_df[col] = 0 # Or some other default
+                forecasted_df[col] = np.nan # if not predicted, set to nan
 
-        # Prepare the actual data
+        # Prepare the actual data, muse default prophet formatting with ds as timestamp and y as predicted value
         actual_df = df.rename(columns={'ds': 'date', 'y': 'total_production_daily'})
         actual_df['label'] = 'actual'
         
         # concat original and predicted data
-        final_df = pd.concat([actual_df, forecasted_df.tail(365)])
+        final_df = pd.concat([actual_df, forecasted_df.tail(365)]) # 1 year prediction
         final_df = final_df.rename(columns={'y': 'total_production_daily', 'ds': 'date'})
 
 
@@ -57,11 +60,15 @@ def forecast_production():
         
         ch_conn.execute_query(f"DROP TABLE IF EXISTS {table_name}")
 
-        create_clickhouse_table_from_df(ch_conn.client, final_df, db_name, tb_name, primary_keys=['date', 'label'])
+        final_df['date'] = pd.to_datetime(final_df['date'])
+        #conver datetime columns as YYYY-MM-DD string
+        final_df['date'] = final_df['date'].dt.strftime("%Y-%m-%d")
+
+        create_clickhouse_table_from_df(ch_conn.get_conn(), final_df, db_name, tb_name, primary_keys=['date', 'label'])
         ch_conn.insert_dataframe(f"""INSERT INTO {db_name}.{tb_name} {str(tuple(final_df.columns)).replace("'","")} VALUES""", final_df)    
 
     finally:
-        ch_conn.disconnect()
+        ch_conn.close()
     
 
 
