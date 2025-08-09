@@ -13,6 +13,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'src'
 from extractor.fetch_csv import fetch_csv
 from extractor.fetch_mysql import fetch_mysql
 from extractor.fetch_weather_api import fetch_weather_api
+from forecaster.predict_production import forecast_production
 
 @dag(
     dag_id="coal_mining_etl",
@@ -47,6 +48,11 @@ def coal_mining_dag():
         cwd=os.path.join(os.path.dirname(__file__), "dbt"),
     )
 
+    forecast_task = PythonOperator(
+        task_id="forecast_production",
+        python_callable=forecast_production,
+    )
+
     dbt_test_task = BashOperator(
         task_id="dbt_test",
         # check failed unit test cases.
@@ -56,6 +62,6 @@ def coal_mining_dag():
 
     end_task = EmptyOperator(task_id="end")
 
-    start_task >> [fetch_csv_task, fetch_mysql_task, fetch_weather_task] >> dbt_run_task >> dbt_test_task >> end_task
+    start_task >> [fetch_csv_task, fetch_mysql_task, fetch_weather_task] >> dbt_run_task >> forecast_task >> dbt_test_task >> end_task
 
 coal_mining_dag_instance = coal_mining_dag()
