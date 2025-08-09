@@ -31,11 +31,11 @@ class ClickHouseConnection(Connection):
         self._connection = None
         print("ClickHouse connection reference cleared.")
 
-    def execute_query(self, query: str, params: tuple = None, settings:dict=None):
+    def execute_query(self, query: str, params: tuple = None, settings:dict=None,**kwargs):
         if not self._connection:
             raise Exception("ClickHouse connection is not established.")
         try:
-            return self._connection.execute(query, params or (),settings=settings)
+            return self._connection.execute(query, params or None,settings=settings,**kwargs)
         except ClickHouseError as e:
             print(f"ClickHouse query error: {e}")
             return None
