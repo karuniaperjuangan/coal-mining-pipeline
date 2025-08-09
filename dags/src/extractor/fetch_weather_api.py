@@ -13,8 +13,8 @@ def fetch_weather_api(start_date,end_date):
         "password": os.environ.get("CLICKHOUSE_PASSWORD"),
         "dbname": os.environ.get("CLICKHOUSE_DATABASE"),
     }
-        
-    response = requests.get(f"https://archive-api.open-meteo.com/v1/archive?latitude=2.0167&longitude=117.3&start_date={start_date}&end_date={end_date}&daily=temperature_2m_mean,precipitation_sum&timezone=Asia%2FJakarta")
+    url= f"https://archive-api.open-meteo.com/v1/archive?latitude=2.0167&longitude=117.3&start_date={start_date}&end_date={end_date}&daily=temperature_2m_mean,precipitation_sum&timezone=Asia%2FJakarta"
+    response = requests.get(url)
     
     if response.status_code != 200:
         raise Exception(f"Request failed with status code {response.status_code}")

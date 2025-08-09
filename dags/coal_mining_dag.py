@@ -1,11 +1,12 @@
 import pendulum
 import sys
 import os
-
+import dotenv
 from airflow.decorators import dag
 from airflow.operators.python import PythonOperator
 from airflow.operators.bash import BashOperator
 from airflow.operators.empty import EmptyOperator
+dotenv.load_dotenv()
 
 #import src
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
