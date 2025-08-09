@@ -8,6 +8,8 @@
 SELECT
     date,
     mine_id,
+    m.mine_code,
+    m.mine_name,
     -- fix anomaly: replace negative tons_extracted with 0
     sum(greatest(0,tons_extracted)) AS total_tons_extracted,
     sum(tons_extracted < 0) >0 AS has_anomaly,
@@ -15,5 +17,5 @@ SELECT
     max(ingested_at) as ingested_at,
     max(toUnixTimestamp(now())) as version
 FROM {{ ref('production_logs') }} FINAL
-LEFT JOIN {{ ref('mines') }} using (mine_id)
-GROUP BY date, mine_id
+LEFT JOIN {{ ref('mines') }} m using (mine_id)
+GROUP BY date, mine_id, m.mine_code, m.mine_name
